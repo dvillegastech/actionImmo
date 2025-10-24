@@ -4,6 +4,8 @@ import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/result_card.dart';
+import '../../models/simulation.dart' as models;
+import '../../services/simulation_service.dart';
 
 class FraisNotaireScreen extends StatefulWidget {
   const FraisNotaireScreen({super.key});
@@ -39,6 +41,36 @@ class _FraisNotaireScreenState extends State<FraisNotaireScreen> {
         _fraisNotaire = prix * tauxFrais;
         _totalAPayer = prix + _fraisNotaire!;
       });
+    }
+  }
+
+  Future<void> _saveSimulation() async {
+    if (_fraisNotaire == null) return;
+
+    final simulation = models.Simulation(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      calculatorName: 'Frais de Notaire',
+      inputs: {
+        'Prix du bien': '${_prixController.text} €',
+        'Type': _isAncien ? 'Ancien' : 'Neuf',
+      },
+      results: {
+        'Frais de notaire': '${_fraisNotaire!.toStringAsFixed(0)} €',
+        'Total à payer': '${_totalAPayer!.toStringAsFixed(0)} €',
+      },
+      date: DateTime.now(),
+    );
+
+    await SimulationService().saveSimulation(simulation);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✅ Simulation sauvegardée !'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -168,6 +200,19 @@ class _FraisNotaireScreenState extends State<FraisNotaireScreen> {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Bouton sauvegarder
+              OutlinedButton.icon(
+                onPressed: _saveSimulation,
+                icon: const Icon(Icons.save_outlined),
+                label: const Text('Sauvegarder cette simulation'),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  side: BorderSide(color: AppTheme.primaryBlue, width: 2),
+                  foregroundColor: AppTheme.primaryBlue,
                 ),
               ),
             ],
