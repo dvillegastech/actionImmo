@@ -32,8 +32,8 @@ class _PlusValueScreenState extends State<PlusValueScreen> {
 
   void _calculate() {
     if (_formKey.currentState!.validate()) {
-      final prixAchat = double.parse(_prixAchatController.text.replaceAll(' ', ''));
-      final prixVente = double.parse(_prixVenteController.text.replaceAll(' ', ''));
+      final prixAchat = double.parse(_prixAchatController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      final prixVente = double.parse(_prixVenteController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final dureeAnnees = int.parse(_dureeDetentionController.text);
 
       final plusValueBrut = prixVente - prixAchat;

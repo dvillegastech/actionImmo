@@ -38,10 +38,10 @@ class _CapaciteEmpruntScreenState extends State<CapaciteEmpruntScreen> {
   void _calculate() {
     if (_formKey.currentState!.validate()) {
       final revenuMensuel =
-          double.parse(_revenuController.text.replaceAll(' ', ''));
+          double.parse(_revenuController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final chargesMensuelles =
-          double.parse(_chargesController.text.replaceAll(' ', ''));
-      final apport = double.parse(_apportController.text.replaceAll(' ', ''));
+          double.parse(_chargesController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      final apport = double.parse(_apportController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final tauxAnnuel = double.parse(_tauxController.text) / 100;
       final dureeAnnees = int.parse(_dureeController.text);
 

@@ -35,7 +35,7 @@ class _CreditImmobilierScreenState extends State<CreditImmobilierScreen> {
 
   void _calculate() {
     if (_formKey.currentState!.validate()) {
-      final montant = double.parse(_montantController.text.replaceAll(' ', ''));
+      final montant = double.parse(_montantController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final tauxAnnuel = double.parse(_tauxController.text) / 100;
       final dureeAnnees = int.parse(_dureeController.text);
       final tauxAssurance = double.parse(_assuranceController.text) / 100;

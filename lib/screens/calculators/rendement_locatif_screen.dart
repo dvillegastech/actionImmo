@@ -36,15 +36,15 @@ class _RendementLocatifScreenState extends State<RendementLocatifScreen> {
   void _calculate() {
     if (_formKey.currentState!.validate()) {
       final prixAchat =
-          double.parse(_prixAchatController.text.replaceAll(' ', ''));
+          double.parse(_prixAchatController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final fraisAchat =
-          double.parse(_fraisAchatController.text.replaceAll(' ', ''));
+          double.parse(_fraisAchatController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final loyerMensuel =
-          double.parse(_loyerController.text.replaceAll(' ', ''));
+          double.parse(_loyerController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final chargesMensuelles =
-          double.parse(_chargesController.text.replaceAll(' ', ''));
+          double.parse(_chargesController.text.replaceAll(RegExp(r'[^0-9]'), ''));
       final taxeFonciere =
-          double.parse(_taxeFonciereController.text.replaceAll(' ', ''));
+          double.parse(_taxeFonciereController.text.replaceAll(RegExp(r'[^0-9]'), ''));
 
       final investissementTotal = prixAchat + fraisAchat;
       final loyerAnnuel = loyerMensuel * 12;
