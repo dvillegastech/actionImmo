@@ -1,75 +1,271 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
+import '../../widgets/input_field.dart';
 
-class DpeGesScreen extends StatelessWidget {
+class DpeGesScreen extends StatefulWidget {
   const DpeGesScreen({super.key});
+
+  @override
+  State<DpeGesScreen> createState() => _DpeGesScreenState();
+}
+
+class _DpeGesScreenState extends State<DpeGesScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _consommationController = TextEditingController();
+  final _emissionsController = TextEditingController();
+
+  String? _classeDPE;
+  String? _classeGES;
+  String? _classeFinal;
+  bool _interdictionLocation = false;
+
+  @override
+  void dispose() {
+    _consommationController.dispose();
+    _emissionsController.dispose();
+    super.dispose();
+  }
+
+  void _calculate() {
+    if (_formKey.currentState!.validate()) {
+      final conso = double.parse(_consommationController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+      final emissions = double.parse(_emissionsController.text.replaceAll(RegExp(r'[^0-9]'), ''));
+
+      // Déterminer classe DPE (consommation)
+      String classeConso;
+      if (conso < 70) classeConso = 'A';
+      else if (conso < 110) classeConso = 'B';
+      else if (conso < 180) classeConso = 'C';
+      else if (conso < 250) classeConso = 'D';
+      else if (conso < 330) classeConso = 'E';
+      else if (conso < 420) classeConso = 'F';
+      else classeConso = 'G';
+
+      // Déterminer classe GES (émissions)
+      String classeEmissions;
+      if (emissions < 6) classeEmissions = 'A';
+      else if (emissions < 11) classeEmissions = 'B';
+      else if (emissions < 30) classeEmissions = 'C';
+      else if (emissions < 50) classeEmissions = 'D';
+      else if (emissions < 70) classeEmissions = 'E';
+      else if (emissions < 100) classeEmissions = 'F';
+      else classeEmissions = 'G';
+
+      // Classe finale = la plus défavorable
+      final classes = [classeConso, classeEmissions];
+      final classeFinal = classes.contains('G') ? 'G' :
+                          classes.contains('F') ? 'F' :
+                          classes.contains('E') ? 'E' :
+                          classes.contains('D') ? 'D' :
+                          classes.contains('C') ? 'C' :
+                          classes.contains('B') ? 'B' : 'A';
+
+      // Interdiction de location en 2025
+      final interdit = classeFinal == 'G'; // G interdit depuis 2025
+
+      setState(() {
+        _classeDPE = classeConso;
+        _classeGES = classeEmissions;
+        _classeFinal = classeFinal;
+        _interdictionLocation = interdit;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return CalculatorScaffold(
       title: 'DPE / GES',
-      description: 'Diagnostic de Performance Énergétique et émissions de Gaz à Effet de Serre',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Classes Énergétiques DPE',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          const SizedBox(height: 16),
-          _DpeClass(letter: 'A', range: '≤ 70', color: Color(0xFF00A35C)),
-          _DpeClass(letter: 'B', range: '71 - 110', color: Color(0xFF5DB75E)),
-          _DpeClass(letter: 'C', range: '111 - 180', color: Color(0xFFC2D82E)),
-          _DpeClass(letter: 'D', range: '181 - 250', color: Color(0xFFFEE500)),
-          _DpeClass(letter: 'E', range: '251 - 330', color: Color(0xFFFDB813)),
-          _DpeClass(letter: 'F', range: '331 - 420', color: Color(0xFFF68B1F)),
-          _DpeClass(letter: 'G', range: '> 420', color: Color(0xFFED1C24)),
-          const SizedBox(height: 24),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppTheme.error.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.error.withOpacity(0.3)),
+      description: 'Calculez la classe énergétique de votre logement (Données 2025)',
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            InputField(
+              controller: _consommationController,
+              label: 'Consommation énergétique',
+              hint: 'Ex: 180',
+              suffix: 'kWh/m²/an',
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Requis';
+                final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+                if (cleaned.isEmpty || double.tryParse(cleaned) == null) return 'Invalide';
+                return null;
+              },
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+            const SizedBox(height: 20),
+            InputField(
+              controller: _emissionsController,
+              label: 'Émissions de GES',
+              hint: 'Ex: 35',
+              suffix: 'kg CO₂/m²/an',
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Requis';
+                final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+                if (cleaned.isEmpty || double.tryParse(cleaned) == null) return 'Invalide';
+                return null;
+              },
+            ),
+            const SizedBox(height: 32),
+
+            ElevatedButton(
+              onPressed: _calculate,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text('Calculer la classe DPE'),
+            ),
+            const SizedBox(height: 32),
+
+            if (_classeFinal != null) ...[
+              _DpeBadge(classe: _classeFinal!),
+              const SizedBox(height: 20),
+
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.warning_amber, color: AppTheme.error),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Logements G interdits',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: AppTheme.error,
+                    _InfoRow('Classe énergie', _classeDPE!),
+                    const SizedBox(height: 8),
+                    _InfoRow('Classe GES', _classeGES!),
+                    const SizedBox(height: 8),
+                    _InfoRow('Classe finale', _classeFinal!, isBold: true),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              if (_interdictionLocation)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.red[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.red[300]!),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.block, color: Colors.red[700], size: 24),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Logement classé G : Interdit à la location depuis le 1er janvier 2025',
+                          style: TextStyle(
+                            color: Colors.red[900],
+                            fontWeight: FontWeight.w600,
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              const SizedBox(height: 20),
+
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.blue[200]!),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.calendar_today, color: Colors.blue[700], size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Interdictions de location',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.blue[900],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      '• Classe G : interdite depuis 2025\n'
+                      '• Classe F : interdite en 2028\n'
+                      '• Classe E : interdite en 2034',
+                      style: TextStyle(color: Colors.blue[900], fontSize: 14),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Depuis 2023, les logements classés G (passoires thermiques) '
-                  'ne peuvent plus être loués. Les logements F seront interdits '
-                  'en 2028, et les E en 2034.',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DpeBadge extends StatelessWidget {
+  final String classe;
+
+  const _DpeBadge({required this.classe});
+
+  Color _getColor() {
+    switch (classe) {
+      case 'A': return const Color(0xFF009E5A);
+      case 'B': return const Color(0xFF5DB75E);
+      case 'C': return const Color(0xFFC2D82E);
+      case 'D': return const Color(0xFFFEE500);
+      case 'E': return const Color(0xFFFDB813);
+      case 'F': return const Color(0xFFF68B1F);
+      case 'G': return const Color(0xFFED1C24);
+      default: return Colors.grey;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: _getColor(),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Classe',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(width: 16),
           Container(
-            padding: const EdgeInsets.all(16),
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
-              color: AppTheme.lightBlue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.lightBlue.withOpacity(0.3)),
+              color: Colors.white,
+              shape: BoxShape.circle,
             ),
-            child: Text(
-              'Le DPE est obligatoire pour toute vente ou location. '
-              'Il est valable 10 ans et doit être réalisé par un diagnostiqueur certifié.',
-              style: Theme.of(context).textTheme.bodyMedium,
+            child: Center(
+              child: Text(
+                classe,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: _getColor(),
+                ),
+              ),
             ),
           ),
         ],
@@ -78,47 +274,34 @@ class DpeGesScreen extends StatelessWidget {
   }
 }
 
-class _DpeClass extends StatelessWidget {
-  final String letter;
-  final String range;
-  final Color color;
+class _InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool isBold;
 
-  const _DpeClass({
-    required this.letter,
-    required this.range,
-    required this.color,
-  });
+  const _InfoRow(this.label, this.value, {this.isBold = false});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Text(
-            letter,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[700],
           ),
-          const SizedBox(width: 16),
-          Text(
-            '$range kWh/m²/an',
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
+            color: Colors.black87,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
