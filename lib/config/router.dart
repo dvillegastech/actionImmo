@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../screens/home_screen.dart';
 import '../screens/map_screen.dart';
 import '../screens/calculators/frais_notaire_screen.dart';
 import '../screens/calculators/credit_immobilier_screen.dart';
@@ -17,19 +16,10 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     routes: [
-      // Home avec liste des calculatrices
+      // Home - Carte avec calculatrices
       GoRoute(
         path: '/',
         name: 'home',
-        pageBuilder: (context, state) => const MaterialPage(
-          child: HomeScreen(),
-        ),
-      ),
-
-      // Carte
-      GoRoute(
-        path: '/map',
-        name: 'map',
         pageBuilder: (context, state) => const MaterialPage(
           child: MapScreen(),
         ),

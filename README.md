@@ -4,10 +4,14 @@ Application mobile professionnelle pour le marché immobilier français avec cal
 
 ## ✨ Fonctionnalités
 
-### 🗺️ Carte Interactive
+### 🗺️ Carte Interactive (Écran Principal)
 - Visualisation des propriétés sur OpenStreetMap
-- Filtres Location/Vente
-- Interface intuitive
+- Filtres Location/Vente en haut
+- **3 calculatrices principales** en bas :
+  - Frais de Notaire
+  - Crédit Immobilier
+  - Capacité d'Emprunt
+- **Bouton "Plus"** pour accéder aux 7 autres calculatrices
 
 ### 🧮 Calculatrices Immobilières (10 outils)
 
