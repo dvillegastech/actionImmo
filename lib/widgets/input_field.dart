@@ -43,7 +43,11 @@ class InputField extends StatelessWidget {
                   FilteringTextInputFormatter.digitsOnly,
                   _ThousandsSeparatorInputFormatter(),
                 ]
-              : null,
+              : (keyboardType.toString().contains('decimal')
+                  ? [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                    ]
+                  : null),
           decoration: InputDecoration(
             hintText: hint,
             suffixText: suffix,

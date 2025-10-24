@@ -49,7 +49,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Action Immobiliaria'),
+        title: const Text('ACTION IMMOBILIARIA'),
         centerTitle: true,
       ),
       body: Stack(
