@@ -28,7 +28,7 @@ class _FraisNotaireScreenState extends State<FraisNotaireScreen> {
 
   void _calculate() {
     if (_formKey.currentState!.validate()) {
-      final prix = double.parse(_prixController.text.replaceAll(' ', ''));
+      final prix = double.parse(_prixController.text.replaceAll(RegExp(r'[^0-9]'), ''));
 
       // Taux de frais de notaire
       // Ancien: 7-8% (on prend 7.5% en moyenne)
@@ -63,7 +63,8 @@ class _FraisNotaireScreenState extends State<FraisNotaireScreen> {
                 if (value == null || value.isEmpty) {
                   return 'Veuillez entrer un prix';
                 }
-                if (double.tryParse(value.replaceAll(' ', '')) == null) {
+                final cleaned = value.replaceAll(RegExp(r'[^0-9]'), '');
+                if (cleaned.isEmpty || double.tryParse(cleaned) == null) {
                   return 'Prix invalide';
                 }
                 return null;
