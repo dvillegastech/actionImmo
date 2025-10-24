@@ -4,6 +4,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/result_card.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class CreditImmobilierScreen extends StatefulWidget {
   const CreditImmobilierScreen({super.key});
@@ -208,6 +209,23 @@ class _CreditImmobilierScreenState extends State<CreditImmobilierScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'Crédit Immobilier',
+                enabled: _mensualite != null,
+                inputs: {
+                  'Montant': '${_montantController.text} €',
+                  'Taux': '${_tauxController.text} %',
+                  'Durée': '${_dureeController.text} ans',
+                  'Assurance': '${_assuranceController.text} %',
+                },
+                results: {
+                  'Mensualité': '${_mensualite?.toStringAsFixed(2) ?? '0'} €',
+                  'Coût total': '${_coutTotal?.toStringAsFixed(0) ?? '0'} €',
+                  'Coût crédit': '${_coutCredit?.toStringAsFixed(0) ?? '0'} €',
+                },
               ),
             ],
           ],

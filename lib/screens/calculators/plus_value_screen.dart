@@ -3,6 +3,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/result_card.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class PlusValueScreen extends StatefulWidget {
   const PlusValueScreen({super.key});
@@ -154,6 +155,22 @@ class _PlusValueScreenState extends State<PlusValueScreen> {
                   'Les résidences principales sont exonérées d\'impôt sur la plus-value.',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'Plus-Value Immobilière',
+                enabled: _plusValueBrute != null,
+                inputs: {
+                  'Prix achat': '${_prixAchatController.text} €',
+                  'Prix vente': '${_prixVenteController.text} €',
+                  'Durée détention': '${_dureeDetentionController.text} ans',
+                },
+                results: {
+                  'Plus-value brute': '${_plusValueBrute?.toStringAsFixed(0) ?? '0'} €',
+                  'Impôt total': '${_impot?.toStringAsFixed(0) ?? '0'} €',
+                  'Gain net': '${_gainNet?.toStringAsFixed(0) ?? '0'} €',
+                },
               ),
             ],
           ],

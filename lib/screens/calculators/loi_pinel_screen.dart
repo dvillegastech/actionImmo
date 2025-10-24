@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class LoiPinelScreen extends StatefulWidget {
   const LoiPinelScreen({super.key});
@@ -245,6 +246,20 @@ class _LoiPinelScreenState extends State<LoiPinelScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'Loi Pinel',
+                enabled: _reductionImpot != null,
+                inputs: {
+                  'Prix': '${_prixController.text} €',
+                  'Durée': '$_duree ans',
+                },
+                results: {
+                  'Réduction totale': '${_reductionImpot?.toStringAsFixed(0) ?? '0'} €',
+                  'Économie annuelle': '${_economieAnnuelle?.toStringAsFixed(0) ?? '0'} €',
+                },
               ),
             ],
 

@@ -3,6 +3,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/result_card.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class RendementLocatifScreen extends StatefulWidget {
   const RendementLocatifScreen({super.key});
@@ -292,6 +293,24 @@ class _RendementLocatifScreenState extends State<RendementLocatifScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'Rendement Locatif',
+                enabled: _rendementBrut != null,
+                inputs: {
+                  'Prix achat': '${_prixAchatController.text} €',
+                  'Frais achat': '${_fraisAchatController.text} €',
+                  'Loyer': '${_loyerController.text} €',
+                  'Charges': '${_chargesController.text} €',
+                  'Taxe foncière': '${_taxeFonciereController.text} €',
+                },
+                results: {
+                  'Rendement brut': '${_rendementBrut?.toStringAsFixed(2) ?? '0'} %',
+                  'Rendement net': '${_rendementNet?.toStringAsFixed(2) ?? '0'} %',
+                  'Cashflow annuel': '${_cashflowAnnuel?.toStringAsFixed(0) ?? '0'} €',
+                },
               ),
             ],
           ],

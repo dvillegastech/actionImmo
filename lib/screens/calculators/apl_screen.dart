@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class AplScreen extends StatefulWidget {
   const AplScreen({super.key});
@@ -420,6 +421,23 @@ class _AplScreenState extends State<AplScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'APL / Aide au Logement',
+                enabled: _eligible != null,
+                inputs: {
+                  'Situation': _situation,
+                  'Personnes': '$_personnes',
+                  'Zone': _zone,
+                  'Revenus': '${_revenuController.text} €',
+                  'Loyer': '${_loyerController.text} €',
+                },
+                results: {
+                  'Éligible': _eligible! ? 'Oui' : 'Non',
+                  'Montant APL': '${_montantAPL?.toStringAsFixed(0) ?? '0'} €/mois',
+                },
               ),
             ],
           ],

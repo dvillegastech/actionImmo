@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class DpeGesScreen extends StatefulWidget {
   const DpeGesScreen({super.key});
@@ -203,6 +204,22 @@ class _DpeGesScreenState extends State<DpeGesScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'DPE / GES',
+                enabled: _classeFinal != null,
+                inputs: {
+                  'Consommation': '${_consommationController.text} kWh/m²/an',
+                  'Émissions': '${_emissionsController.text} kg CO₂/m²/an',
+                },
+                results: {
+                  'Classe énergie': _classeDPE!,
+                  'Classe GES': _classeGES!,
+                  'Classe finale': _classeFinal!,
+                  'Interdit location': _interdictionLocation ? 'Oui' : 'Non',
+                },
               ),
             ],
           ],

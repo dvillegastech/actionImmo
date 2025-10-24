@@ -4,6 +4,7 @@ import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/result_card.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class CapaciteEmpruntScreen extends StatefulWidget {
   const CapaciteEmpruntScreen({super.key});
@@ -232,6 +233,24 @@ class _CapaciteEmpruntScreenState extends State<CapaciteEmpruntScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'Capacité d\'Emprunt',
+                enabled: _capaciteEmprunt != null,
+                inputs: {
+                  'Revenus': '${_revenuController.text} €',
+                  'Charges': '${_chargesController.text} €',
+                  'Apport': '${_apportController.text} €',
+                  'Taux': '${_tauxController.text} %',
+                  'Durée': '${_dureeController.text} ans',
+                },
+                results: {
+                  'Budget total': '${_budgetTotal?.toStringAsFixed(0) ?? '0'} €',
+                  'Capacité emprunt': '${_capaciteEmprunt?.toStringAsFixed(0) ?? '0'} €',
+                  'Mensualité max': '${_mensualiteMax?.toStringAsFixed(0) ?? '0'} €',
+                },
               ),
             ],
           ],

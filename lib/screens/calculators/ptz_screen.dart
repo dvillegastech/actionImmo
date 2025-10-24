@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class PtzScreen extends StatefulWidget {
   const PtzScreen({super.key});
@@ -330,6 +331,23 @@ class _PtzScreenState extends State<PtzScreen> {
                   ),
                 ),
               ],
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'PTZ - Prêt à Taux Zéro',
+                enabled: _eligible != null,
+                inputs: {
+                  'Zone': _zone,
+                  'Personnes': '$_personnes',
+                  'Revenus': '${_revenuController.text} €',
+                  'Prix': '${_prixController.text} €',
+                },
+                results: {
+                  'Éligible': _eligible! ? 'Oui' : 'Non',
+                  if (_eligible!) 'Montant PTZ': '${_montantPTZ?.toStringAsFixed(0) ?? '0'} €',
+                  if (_eligible!) 'Quotité': '${(_quotite! * 100).toInt()} %',
+                },
+              ),
             ],
           ],
         ),

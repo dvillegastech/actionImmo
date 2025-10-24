@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/calculator_scaffold.dart';
 import '../../widgets/input_field.dart';
+import '../../widgets/save_simulation_button.dart';
 
 class TaxeFonciereScreen extends StatefulWidget {
   const TaxeFonciereScreen({super.key});
@@ -436,6 +437,24 @@ class _TaxeFonciereScreenState extends State<TaxeFonciereScreen> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 24),
+
+              SaveSimulationButton(
+                calculatorName: 'Taxe Foncière',
+                enabled: _taxeFonciere != null,
+                inputs: {
+                  'Commune': _commune,
+                  'Mode': _useVlc ? 'VLC connue' : 'Estimation',
+                  if (_useVlc) 'VLC': '${_vlcController.text} €',
+                  if (!_useVlc) 'Type bien': _typeBien,
+                  if (!_useVlc) 'Surface': '${_surfaceController.text} m²',
+                },
+                results: {
+                  'Taxe foncière': '${_taxeFonciere?.toStringAsFixed(0) ?? '0'} €/an',
+                  'Taux communal': '${_tauxCommune?.toStringAsFixed(1) ?? '0'} %',
+                  'VLC': '${_vlcCalculee?.toStringAsFixed(0) ?? '0'} €',
+                },
               ),
             ],
           ],
