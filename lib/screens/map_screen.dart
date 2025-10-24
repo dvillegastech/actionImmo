@@ -51,6 +51,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       appBar: AppBar(
         title: const Text('ACTION IMMOBILIARIA'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () => context.push('/mes-simulations'),
+            tooltip: 'Mes Simulations',
+          ),
+          IconButton(
+            icon: const Icon(Icons.contact_phone),
+            onPressed: () => context.push('/contact-professionals'),
+            tooltip: 'Contacter un Professionnel',
+          ),
+        ],
       ),
       body: Stack(
         children: [

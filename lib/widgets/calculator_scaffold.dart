@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'calculator_disclaimer.dart';
 
 class CalculatorScaffold extends StatelessWidget {
   final String title;
@@ -31,6 +32,10 @@ class CalculatorScaffold extends StatelessWidget {
                     color: AppTheme.mediumGrey,
                   ),
             ),
+            const SizedBox(height: 16),
+
+            // Disclaimer
+            const CalculatorDisclaimer(),
             const SizedBox(height: 24),
 
             // Contenu
