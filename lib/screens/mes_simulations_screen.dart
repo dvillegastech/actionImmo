@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/simulation.dart';
+import '../models/simulation.dart' as models;
 import '../services/simulation_service.dart';
 import '../theme/app_theme.dart';
 
 final simulationServiceProvider = Provider((ref) => SimulationService());
 
-final simulationsProvider = StreamProvider<List<Simulation>>((ref) async* {
+final simulationsProvider = StreamProvider<List<models.Simulation>>((ref) async* {
   final service = ref.watch(simulationServiceProvider);
   while (true) {
     yield service.getAllSimulations();
@@ -89,7 +89,7 @@ class MesSimulationsScreen extends ConsumerWidget {
   Widget _buildSimulationsList(
     BuildContext context,
     WidgetRef ref,
-    List<Simulation> simulations,
+    List<models.Simulation> simulations,
   ) {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
@@ -139,7 +139,7 @@ class MesSimulationsScreen extends ConsumerWidget {
 }
 
 class _SimulationCard extends StatelessWidget {
-  final Simulation simulation;
+  final models.Simulation simulation;
   final VoidCallback onDelete;
 
   const _SimulationCard({
