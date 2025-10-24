@@ -146,8 +146,7 @@ class AppRouter {
           child: DpeGesScreen(),
         ),
       ),
-    ],
-  );
+    ];
 
   // Helper function for slide transitions
   static CustomTransitionPage _buildSlideTransition(

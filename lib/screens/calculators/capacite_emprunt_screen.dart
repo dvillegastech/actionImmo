@@ -6,7 +6,7 @@ import '../../widgets/input_field.dart';
 import '../../widgets/result_card.dart';
 
 class CapaciteEmpruntScreen extends StatefulWidget {
-  const CapaciteEmpruntScreen({super.key};
+  const CapaciteEmpruntScreen({super.key});
 
   @override
   State<CapaciteEmpruntScreen> createState() => _CapaciteEmpruntScreenState();
